@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<version>42.6.0</version> 
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -56,8 +56,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.example.project.BookApplication</mainClass> <!-- 使用するメインクラスを指定 -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

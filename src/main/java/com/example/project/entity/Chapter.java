@@ -18,5 +18,13 @@ public class Chapter {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
+    public Chapter(String chapterTitle, String content){
+        this.chapterTitle = chapterTitle;
+        this.content = content;
+    }
+
     // ゲッターとセッター
+    public void setBook(Book book){
+        this.book = book;
+    }
 }

@@ -15,5 +15,14 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Chapter> chapters;
 
+    public Book(String title, List<Chapter> chapters) {
+        this.title = title;
+        this.chapters = chapters;
+
+        for (Chapter chapter : chapters) {
+            chapter.setBook(this);  // Chapterのbookを自動的に設定
+        }
+    }
+
     // ゲッターとセッター
 }

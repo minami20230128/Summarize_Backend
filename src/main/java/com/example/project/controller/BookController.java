@@ -4,6 +4,8 @@ import com.example.project.entity.Book;
 import com.example.project.entity.Chapter;
 import com.example.project.repository.BookRepository;
 import com.example.project.repository.ChapterRepository;
+import com.example.project.service.BookService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +37,14 @@ public class BookController {
     @PostMapping("/chapters")
     public Chapter addChapter(@RequestBody Chapter chapter) {
         return chapterRepository.save(chapter);
+    }
+
+    @Autowired
+    private BookService bookService;
+    @GetMapping("/add-dummy-data")
+    public void addDummyData()
+    {
+        bookService.addDummyData();
+        System.out.println("dummy data added.");
     }
 }

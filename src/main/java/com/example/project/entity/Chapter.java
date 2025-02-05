@@ -24,6 +24,15 @@ public class Chapter {
     }
 
     // ゲッターとセッター
+    public long getId(){
+        return this.id;
+    }
+
+    public String getTitle()
+    {
+        return this.chapterTitle;
+    }
+
     public void setBook(Book book){
         this.book = book;
     }

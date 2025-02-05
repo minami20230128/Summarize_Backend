@@ -7,12 +7,17 @@ import com.example.project.repository.ChapterRepository;
 import com.example.project.service.BookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class BookController {
 
     @Autowired
@@ -23,10 +28,17 @@ public class BookController {
 
     // 書籍を追加するエンドポイント
     @PostMapping("/books")
-    public Book addBook(@RequestBody Book book) {
-        return bookRepository.save(book);
-    }
+    public ResponseEntity<Map<String, Object>> createBook(@RequestBody Book book) {
+        Book savedBook = bookRepository.save(book);
 
+        // 保存された書籍の ID を含めて JSON を返す
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", savedBook.getId());
+        response.put("title", savedBook.getTitle());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    
     // 書籍の一覧を取得するエンドポイント
     @GetMapping("/books")
     public List<Book> getBooks() {
@@ -35,16 +47,22 @@ public class BookController {
 
     // 章を追加するエンドポイント
     @PostMapping("/chapters")
-    public Chapter addChapter(@RequestBody Chapter chapter) {
-        return chapterRepository.save(chapter);
+    public ResponseEntity<Map<String, Object>> addChapter(@RequestBody Chapter chapter) {
+        var savedChapter = chapterRepository.save(chapter);
+        // 保存された書籍の ID を含めて JSON を返す
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", savedChapter.getId());
+        response.put("title", savedChapter.getTitle());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Autowired
-    private BookService bookService;
-    @GetMapping("/add-dummy-data")
-    public void addDummyData()
-    {
-        bookService.addDummyData();
-        System.out.println("dummy data added.");
-    }
+    //@Autowired
+    //private BookService bookService;
+    //@GetMapping("/add-dummy-data")
+    //public void addDummyData()
+    //{
+    //    bookService.addDummyData();
+    //    System.out.println("dummy data added.");
+    //}
 }

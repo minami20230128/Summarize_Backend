@@ -1,6 +1,9 @@
 package com.example.project.entity;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,15 +16,17 @@ public class Book {
     private String title;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chapter> chapters;
+    private List<Chapter> chapters = new ArrayList<>();  // ✅ nullを防ぐ
 
-    public Book(String title, List<Chapter> chapters) {
+    // ✅ JPA用のデフォルトコンストラクタ（必須）
+    protected Book() {}
+
+    // ✅ @JsonCreatorを追加し、デシリアライズ時の `null` を防ぐ
+    @JsonCreator
+    public Book(@JsonProperty("title") String title, 
+                @JsonProperty("chapters") List<Chapter> chapters) {
         this.title = title;
-        this.chapters = chapters;
-
-        for (Chapter chapter : chapters) {
-            chapter.setBook(this);  // Chapterのbookを自動的に設定
-        }
+        this.chapters = (chapters != null) ? chapters : new ArrayList<>();  // ✅ nullチェック
     }
 
     public Long getId() {
@@ -32,5 +37,11 @@ public class Book {
         return this.title;
     }
 
-    // ゲッターとセッター
+    public List<Chapter> getChapters() {
+        return chapters;
+    }
+
+    public void setChapters(List<Chapter> chapters) {
+        this.chapters = (chapters != null) ? chapters : new ArrayList<>();  // ✅ nullチェック
+    }
 }

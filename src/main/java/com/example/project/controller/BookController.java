@@ -48,6 +48,11 @@ public class BookController {
     // 章を追加するエンドポイント
     @PostMapping("/chapters")
     public ResponseEntity<Map<String, Object>> addChapter(@RequestBody Chapter chapter) {
+        Book book = bookRepository.findById(chapter.getBookId())
+                    .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        book.addChapter(chapter);
+        chapter.setBook(book);
         var savedChapter = chapterRepository.save(chapter);
         // 保存された書籍の ID を含めて JSON を返す
         Map<String, Object> response = new HashMap<>();

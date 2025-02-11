@@ -23,7 +23,6 @@ public class Chapter {
     private Book book;
 
     @Column(name = "book_id", insertable = false, updatable = false)
-    @JsonProperty("book_id") // JSON のキーを Flutter 側と統一
     private long bookId;
 
     public Chapter(String chapterTitle, String content){

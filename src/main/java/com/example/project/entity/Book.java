@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.ToString;
+
+@ToString
 @Entity
 public class Book {
     @Id
@@ -15,7 +18,7 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Chapter> chapters = new ArrayList<>();  // ✅ nullを防ぐ
 
     // ✅ JPA用のデフォルトコンストラクタ（必須）
@@ -43,5 +46,10 @@ public class Book {
 
     public void setChapters(List<Chapter> chapters) {
         this.chapters = (chapters != null) ? chapters : new ArrayList<>();  // ✅ nullチェック
+    }
+
+    public void addChapter(Chapter chapter)
+    {
+        this.chapters.add(chapter);
     }
 }

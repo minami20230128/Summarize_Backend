@@ -7,24 +7,42 @@ import com.example.project.entity.Book;
 import com.example.project.entity.Chapter;
 import com.example.project.repository.BookRepository;
 
+import jakarta.annotation.PostConstruct;
+
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
 
     @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private List<Book> cachedBooks;  // メモリ上でデータを保持
 
-    public void addDummyData() {
-        var chapter1 = new Chapter("chapter1", "aaaa");
-        var chapter2 = new Chapter("chapter2", "bbbb");
+    public BookService(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
 
-        var book1 = new Book("title", Arrays.asList(chapter1));
-        var book2 = new Book("Jane Smith", Arrays.asList(chapter2));
+    @PostConstruct
+    public void loadBooksOnStartup() {
+        this.cachedBooks = bookRepository.findAll();  // アプリ起動時にDBから読み込む
+    }
 
-        bookRepository.save(book1);
-        bookRepository.save(book2);
+    // キャッシュに新しい本を追加
+    public void addBookToCache(Book book) {
+        cachedBooks.add(book);
 
-        System.out.println("ダミーデータがデータベースに登録されました。");
+        for(var b : cachedBooks)
+        {
+            System.out.println(b);
+        }   
+    }
+
+    // DBにアクセスせずにメモリ上のデータを検索
+    public Optional<Book> findById(Long id) {
+        return cachedBooks.stream()
+                .filter(book -> book.getId().equals(id))
+                .findFirst();
     }
 }

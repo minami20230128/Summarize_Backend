@@ -26,10 +26,19 @@ public class BookController {
     @Autowired
     private ChapterRepository chapterRepository;
 
+    private final BookService bookService;
+
+    public BookController(BookRepository bookRepository, BookService bookService) {
+        this.bookRepository = bookRepository;
+        this.bookService = bookService;
+    }
+
     // 書籍を追加するエンドポイント
     @PostMapping("/books")
     public ResponseEntity<Map<String, Object>> createBook(@RequestBody Book book) {
         Book savedBook = bookRepository.save(book);
+
+        bookService.addBookToCache(savedBook); // キャッシュを更新
 
         // 保存された書籍の ID を含めて JSON を返す
         Map<String, Object> response = new HashMap<>();
@@ -48,6 +57,7 @@ public class BookController {
     // 章を追加するエンドポイント
     @PostMapping("/chapters")
     public ResponseEntity<Map<String, Object>> addChapter(@RequestBody Chapter chapter) {
+        System.out.println(chapter.getBookId());
         Book book = bookRepository.findById(chapter.getBookId())
                     .orElseThrow(() -> new RuntimeException("Book not found"));
 

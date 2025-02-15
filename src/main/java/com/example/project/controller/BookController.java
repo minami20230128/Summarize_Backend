@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +29,7 @@ public class BookController {
 
     private final BookService bookService;
 
+    @Autowired
     public BookController(BookRepository bookRepository, BookService bookService) {
         this.bookRepository = bookRepository;
         this.bookService = bookService;
@@ -72,12 +74,21 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //@Autowired
-    //private BookService bookService;
-    //@GetMapping("/add-dummy-data")
-    //public void addDummyData()
-    //{
-    //    bookService.addDummyData();
-    //    System.out.println("dummy data added.");
-    //}
+    @GetMapping("/books/details")
+    public List<Book> getAllBooksWithChapters() {
+        List<Book> books = bookRepository.findAll();
+        books.forEach(book -> {
+            List<Chapter> chapters = chapterRepository.findAll().stream()
+                    .filter(chapter -> chapter.getBookId().equals(book.getId()))
+                    .collect(Collectors.toList());
+            book.setChapters(chapters);
+        });
+        return books;
+    }
+
+    // すべての章を取得するエンドポイント
+    @GetMapping("/chapters")
+    public List<Chapter> getAllChapters() {
+        return chapterRepository.findAll();
+    }
 }

@@ -25,13 +25,17 @@ public class Chapter {
     @Column(name = "book_id", insertable = false, updatable = false)
     private long bookId;
 
+    public Chapter()
+    {
+    }
+
     public Chapter(String chapterTitle, String content){
         this.chapterTitle = chapterTitle;
         this.content = content;
     }
 
     // ゲッターとセッター
-    public long getId(){
+    public Long getId(){
         return this.id;
     }
 
@@ -40,7 +44,7 @@ public class Chapter {
         return this.chapterTitle;
     }
 
-    public long getBookId(){
+    public Long getBookId(){
         return this.bookId;
     }
 

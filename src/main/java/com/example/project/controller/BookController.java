@@ -74,17 +74,11 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/books/details")
+    @GetMapping(value = "/books/details", produces = "application/json;charset=UTF-8")
     public List<Book> getAllBooksWithChapters() {
-        List<Book> books = bookRepository.findAll();
-        books.forEach(book -> {
-            List<Chapter> chapters = chapterRepository.findAll().stream()
-                    .filter(chapter -> chapter.getBookId().equals(book.getId()))
-                    .collect(Collectors.toList());
-            book.setChapters(chapters);
-        });
-        return books;
+        return bookRepository.findAll(); // JPAが自動で関連データを取得する
     }
+
 
     // すべての章を取得するエンドポイント
     @GetMapping("/chapters")

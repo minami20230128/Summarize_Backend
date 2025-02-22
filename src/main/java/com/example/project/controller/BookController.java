@@ -6,6 +6,8 @@ import com.example.project.repository.BookRepository;
 import com.example.project.repository.ChapterRepository;
 import com.example.project.service.BookService;
 
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +78,19 @@ public class BookController {
 
     @GetMapping(value = "/books/details", produces = "application/json;charset=UTF-8")
     public List<Book> getAllBooksWithChapters() {
-        return bookRepository.findAll(); // JPAが自動で関連データを取得する
+        var books = bookRepository.findAll();
+
+        for(var book : books)
+        {
+            List<Chapter> chapters = chapterRepository.findByBookId(book.getId());
+            for(var chapter : chapters)
+            {
+                System.out.println(chapter.getTitle());
+            }
+            book.setChapters(chapters);
+        }
+
+        return books;
     }
 
 

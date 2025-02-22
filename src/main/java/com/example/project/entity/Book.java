@@ -18,6 +18,7 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
+    @JsonProperty("chapters")
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Chapter> chapters = new ArrayList<>();  // ✅ nullを防ぐ
 

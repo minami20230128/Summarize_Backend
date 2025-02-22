@@ -48,6 +48,11 @@ public class Chapter {
         return this.bookId;
     }
 
+    public String getContent()
+    {
+        return this.content;
+    }
+
     public void setChapterTitle(String title)
     {
         this.chapterTitle = title;

@@ -59,7 +59,7 @@ public class BookController {
     // 章を追加するエンドポイント
     @PostMapping("/chapters")
     public ResponseEntity<Map<String, Object>> addChapter(@RequestBody Chapter chapter) {
-        System.out.println(chapter.getBookId());
+        System.out.println(chapter.getTitle());
         Book book = bookRepository.findById(chapter.getBookId())
                     .orElseThrow(() -> new RuntimeException("Book not found"));
 

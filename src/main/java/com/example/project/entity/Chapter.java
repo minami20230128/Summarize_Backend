@@ -48,6 +48,11 @@ public class Chapter {
         return this.bookId;
     }
 
+    public void setChapterTitle(String title)
+    {
+        this.chapterTitle = title;
+    }
+
     public void setBookId(long bookId)
     {
         this.bookId = bookId;

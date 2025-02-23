@@ -61,7 +61,7 @@ public class BookController {
     // 章を追加するエンドポイント
     @PostMapping("/chapters")
     public ResponseEntity<Map<String, Object>> addChapter(@RequestBody Chapter chapter) {
-        System.out.println(chapter.getTitle());
+        System.out.println(chapter.getContent());
         Book book = bookRepository.findById(chapter.getBookId())
                     .orElseThrow(() -> new RuntimeException("Book not found"));
 
@@ -75,6 +75,35 @@ public class BookController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+        // 章を更新するエンドポイント
+        @PutMapping("/chapters/{id}")
+        public ResponseEntity<Map<String, Object>> updateChapter(@PathVariable("id") Long id, @RequestBody Chapter updatedChapter) {
+            Chapter existingChapter = chapterRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Chapter not found"));
+    
+            // 更新された内容を適用
+            existingChapter.setChapterTitle(updatedChapter.getTitle());
+            existingChapter.setContent(updatedChapter.getContent());
+    
+            // もしbookが更新された場合（別途送られてくる場合）、bookの更新
+            if (updatedChapter.getBook() != null) {
+                Book book = bookRepository.findById(updatedChapter.getBook().getId())
+                        .orElseThrow(() -> new RuntimeException("Book not found"));
+                existingChapter.setBook(book);
+            }
+    
+            // 保存して更新を反映
+            Chapter savedChapter = chapterRepository.save(existingChapter);
+    
+            // 更新された章情報を返す
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", savedChapter.getId());
+            response.put("title", savedChapter.getTitle());
+            response.put("content", savedChapter.getContent());
+    
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
 
     @GetMapping(value = "/books/details", produces = "application/json;charset=UTF-8")
     public List<Book> getAllBooksWithChapters() {

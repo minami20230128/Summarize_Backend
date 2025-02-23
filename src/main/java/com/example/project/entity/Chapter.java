@@ -67,4 +67,12 @@ public class Chapter {
     {
         this.book = book;
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Book getBook() {
+        return this.book;
+    }
 }

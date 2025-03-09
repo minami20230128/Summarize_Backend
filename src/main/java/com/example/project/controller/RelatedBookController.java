@@ -56,7 +56,7 @@ public class RelatedBookController {
 
     // 同じbookIdを持つ関連書籍を取得
     @GetMapping(value = "/by-book-id/{bookId}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<List<RelatedBook>> getRelatedBooksBybookId(@PathVariable Integer bookId) {
+    public ResponseEntity<List<RelatedBook>> getRelatedBooksBybookId(@PathVariable Long bookId) {
         List<RelatedBook> relatedBooks = relatedBookService.getRelatedBooksByBookId(bookId);
         for(var relatedBook : relatedBooks)
         {

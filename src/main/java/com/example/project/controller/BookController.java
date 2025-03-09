@@ -2,8 +2,10 @@ package com.example.project.controller;
 
 import com.example.project.entity.Book;
 import com.example.project.entity.Chapter;
+import com.example.project.entity.RelatedBook;
 import com.example.project.repository.BookRepository;
 import com.example.project.repository.ChapterRepository;
+import com.example.project.repository.RelatedBookRepository;
 import com.example.project.service.BookService;
 
 import jakarta.transaction.Transactional;
@@ -25,9 +27,10 @@ public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
-
     @Autowired
     private ChapterRepository chapterRepository;
+    @Autowired
+    private RelatedBookRepository relatedBookRepository;
 
     private final BookService bookService;
 
@@ -56,6 +59,58 @@ public class BookController {
     @GetMapping("/books")
     public List<Book> getBooks() {
         return bookRepository.findAll();
+    }
+
+    // 書籍のタイトルを更新するエンドポイント
+    @PutMapping("/books/{id}")
+    public ResponseEntity<Map<String, Object>> updateBookTitle(@PathVariable("id") Long id, @RequestBody Map<String, String> updatedTitle) {
+        Book existingBook = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        // タイトルを更新
+        existingBook.setTitle(updatedTitle.get("title"));
+
+        // 保存して更新を反映
+        Book savedBook = bookRepository.save(existingBook);
+
+        // 更新された書籍情報を返す
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", savedBook.getId());
+        response.put("title", savedBook.getTitle());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    // 書籍を削除するエンドポイント
+    @DeleteMapping("/books/{id}")
+    public ResponseEntity<Map<String, Object>> deleteBook(@PathVariable("id") Long id) {
+        // 削除対象の書籍を探す
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        // 関連する章も削除する
+        List<Chapter> chapters = chapterRepository.findByBookId(id);
+        chapterRepository.deleteAll(chapters);  // 章を先に削除
+
+        //関連書籍も削除
+        List<RelatedBook> relatedBooks = relatedBookRepository.findByBookId(id);
+        for(var relatedBook : relatedBooks)
+        {
+            System.out.println("Related Books");
+            System.out.println(relatedBook.getTitle());
+        }
+        relatedBookRepository.deleteAll(relatedBooks);
+
+        // 書籍を削除
+        bookRepository.delete(book);
+
+        // 削除成功のレスポンスを返す
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Book deleted successfully");
+        response.put("id", id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 章を追加するエンドポイント

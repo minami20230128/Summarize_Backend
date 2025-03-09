@@ -53,4 +53,8 @@ public class Book {
     {
         this.chapters.add(chapter);
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

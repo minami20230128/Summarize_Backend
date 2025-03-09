@@ -44,7 +44,7 @@ public class RelatedBookService {
         relatedBookRepository.deleteById(id);
     }
 
-    public List<RelatedBook> getRelatedBooksByBookId(Integer bookId) {
+    public List<RelatedBook> getRelatedBooksByBookId(Long bookId) {
         return relatedBookRepository.findByBookId(bookId);
     }
 }

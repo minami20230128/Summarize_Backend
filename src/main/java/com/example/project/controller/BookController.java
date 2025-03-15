@@ -140,6 +140,7 @@ public class BookController {
         // 更新された内容を適用
         existingChapter.setChapterTitle(updatedChapter.getTitle());
         existingChapter.setContent(updatedChapter.getContent());
+        existingChapter.setInsight(updatedChapter.getInsight());
 
         // もしbookが更新された場合（別途送られてくる場合）、bookの更新
         if (updatedChapter.getBook() != null) {
@@ -151,11 +152,14 @@ public class BookController {
         // 保存して更新を反映
         Chapter savedChapter = chapterRepository.save(existingChapter);
 
+        System.out.println(savedChapter.getInsight());
+
         // 更新された章情報を返す
         Map<String, Object> response = new HashMap<>();
         response.put("id", savedChapter.getId());
         response.put("title", savedChapter.getTitle());
         response.put("content", savedChapter.getContent());
+        response.put("insight", savedChapter.getInsight());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

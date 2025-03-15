@@ -17,6 +17,9 @@ public class Chapter {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column(columnDefinition = "TEXT", nullable = true)
+    private String insight;
+
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     @JsonIgnore // `book` フィールドを JSON でシリアライズしない
@@ -53,6 +56,11 @@ public class Chapter {
         return this.content;
     }
 
+    public String getInsight()
+    {
+        return this.insight;
+    }
+
     public void setChapterTitle(String title)
     {
         this.chapterTitle = title;
@@ -70,6 +78,10 @@ public class Chapter {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setInsight(String insight) {
+        this.insight = insight;
     }
 
     public Book getBook() {
